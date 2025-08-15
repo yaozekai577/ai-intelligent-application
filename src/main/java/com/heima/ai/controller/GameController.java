@@ -1,6 +1,5 @@
 package com.heima.ai.controller;
 
-import com.heima.ai.repository.ChatHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
@@ -12,8 +11,8 @@ import reactor.core.publisher.Flux;
 @RequestMapping("/ai")
 @RequiredArgsConstructor
 public class GameController {
-    private final ChatClient gameChatClient;
 
+    private final ChatClient gameChatClient;
 
     @RequestMapping(value = "/game",produces = "text/html;charset=utf-8")
     public Flux<String> chat(String prompt, String chatId){
