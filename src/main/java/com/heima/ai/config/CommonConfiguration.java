@@ -1,6 +1,7 @@
 package com.heima.ai.config;
 
 import com.heima.ai.constants.SystemConstants;
+import com.heima.ai.tools.CourseTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -55,6 +56,23 @@ public class CommonConfiguration {
                 .defaultSystem(SystemConstants.GAME_SYSTEM_PROMPT)//系统配置
                 .defaultAdvisors(new SimpleLoggerAdvisor())//日志
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())//会话记忆
+                .build();
+    }
+
+    /**
+     * 智能客服
+     * @param model
+     * @param chatMemory
+     * @return
+     */
+    @Bean
+    public ChatClient serviceChatClient(OpenAiChatModel model, ChatMemory chatMemory, CourseTools courseTools) {
+        return ChatClient
+                .builder(model)
+                .defaultSystem(SystemConstants.SERVICE_SYSTEM_PROMPT)//系统配置
+                .defaultAdvisors(new SimpleLoggerAdvisor())//日志
+                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())//会话记忆
+                .defaultTools(courseTools)
                 .build();
     }
 }
