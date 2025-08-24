@@ -50,6 +50,9 @@ public class LocalPdfFileRepository implements FileRepository {
         return new FileSystemResource(chatFiles.getProperty(chatId));
     }
 
+    /**
+     * 如果选择了RedisVectorStore，或者CassandraVectorStore，则无需自己持久化
+     */
     @PostConstruct
     private void init() {
         FileSystemResource pdfResource = new FileSystemResource("chat-pdf.properties");

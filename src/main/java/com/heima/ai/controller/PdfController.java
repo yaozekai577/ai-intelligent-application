@@ -60,7 +60,7 @@ public class PdfController {
     }
 
     /**
-     * 文件上传
+     * 文件上传并导入向量数据库
      */
     @RequestMapping("/upload/{chatId}")
     public Result uploadPdf(@PathVariable String chatId, @RequestParam("file") MultipartFile file) {
