@@ -5,17 +5,20 @@ import com.heima.ai.tools.CourseTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 @Configuration
 public class CommonConfiguration {
@@ -79,14 +82,86 @@ public class CommonConfiguration {
      * @return
      */
     @Bean
-    public ChatClient serviceChatClient(OpenAiChatModel model, ChatMemory chatMemory, CourseTools courseTools) {
-        return ChatClient
-                .builder(model)
-                .defaultSystem(SystemConstants.SERVICE_SYSTEM_PROMPT)//系统配置
-                .defaultAdvisors(new SimpleLoggerAdvisor())//日志
-                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())//会话记忆
+    public ChatClient serviceChatClient(OpenAiChatModel model,
+                                        ChatMemory chatMemory,
+                                        CourseTools courseTools) {
+        return ChatClient.builder(model)
+                .defaultSystem(SystemConstants.SERVICE_SYSTEM_PROMPT)
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(),
+                        MessageChatMemoryAdvisor.builder(chatMemory).build()
+                )
                 .defaultTools(courseTools)
                 .build();
     }
+
+//    @Bean
+//    public ChatClient serviceChatClient(OpenAiChatModel model, ChatMemory chatMemory, CourseTools courseTools) {
+//        return ChatClient
+//                .builder(model)
+//                .defaultSystem(SystemConstants.SERVICE_SYSTEM_PROMPT)//系统配置
+//                .defaultAdvisors(new SimpleLoggerAdvisor())//日志
+//                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())//会话记忆
+//                .defaultTools(courseTools)
+//                .build();
+//    }
+
+    /**
+     * AI处理文件的pdfChatClient对象，用于处理用户输入的pdf，并返回处理结果
+     * @param model
+     * @param chatMemory
+     * @return
+     */
+        @Bean
+    public ChatClient pdfChatClient(OpenAiChatModel model, ChatMemory chatMemory, VectorStore vectorStore) {
+        return ChatClient.builder(model)
+                .defaultSystem("请根据上下文回答，遇到上下文没有的问题，不要随意编造。")
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(),//日志
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),//开启记忆功能
+                        QuestionAnswerAdvisor.builder(vectorStore)//配置向量数据库和检索范围
+                                .searchRequest(SearchRequest.builder()
+                                        .similarityThreshold(0.6)
+                                        .topK(1)
+                                        .build())
+                                .build()
+                )
+                .build();
+    }
+
+//    @Bean
+//    public ChatClient pdfChatClient(OllamaChatModel model,ChatMemory chatMemory,VectorStore vectorStore) {
+//        return ChatClient
+//                .builder(model)
+//                .defaultSystem("请根据上下文回答，遇到上下文没有的问题，不要随意编造。")
+//                .defaultAdvisors(new SimpleLoggerAdvisor())//日志
+//                .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())//会话记忆
+//                .defaultAdvisors(QuestionAnswerAdvisor.builder(vectorStore)
+//                        .searchRequest(SearchRequest.builder()
+//                                .similarityThreshold(0.6)
+//                                .topK(2)
+//                                .build())
+//                        .build())
+//                .build();
+//    }
+
+//    @Bean
+//    public ChatClient pdfChatClient(OllamaChatModel model,
+//                                    ChatMemory chatMemory,
+//                                    VectorStore vectorStore) {
+//        return ChatClient.builder(model)
+//                .defaultSystem("请根据上下文回答，遇到上下文没有的问题，不要随意编造。")
+//                .defaultAdvisors(
+//                        new SimpleLoggerAdvisor(),
+//                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
+//                        QuestionAnswerAdvisor.builder(vectorStore)
+//                                .searchRequest(SearchRequest.builder()
+//                                        .similarityThreshold(0.6)
+//                                        .topK(2)
+//                                        .build())
+//                                .build()
+//                )
+//                .build();
+//    }
 
 }
