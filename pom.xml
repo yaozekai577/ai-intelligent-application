@@ -8,11 +8,11 @@
         <version>3.4.8</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.heima</groupId>
-    <artifactId>heima-ai</artifactId>
+    <groupId>com.yaozekai</groupId>
+    <artifactId>ai-intelligent-application</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>heima-ai</name>
-    <description>heima-ai</description>
+    <name>ai-intelligent-application</name>
+    <description>ai-intelligent-application</description>
     <url/>
     <licenses>
         <license/>

@@ -1,4 +1,4 @@
-# heima-ai · Spring AI 智能应用集合
+# ai-intelligent-application · Spring AI 智能应用集合
 
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.8-brightgreen)
@@ -252,8 +252,8 @@ curl "http://localhost:8080/ai/history/pdf/pdf-001"
 ## 项目结构
 
 ```
-src/main/java/com/heima/ai/
-├── HeimaAiApplication.java          # 启动类，@MapperScan
+src/main/java/com/yaozekai/ai/
+├── AiIntelligentApplication.java    # 启动类，@MapperScan("com.yaozekai.ai.mapper")
 ├── config/
 │   ├── CommonConfiguration.java     # 向量库、ChatMemory、4 个 ChatClient 的装配
 │   └── MvcConfiguration.java        # 全局 CORS
